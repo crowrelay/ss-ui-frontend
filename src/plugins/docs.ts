@@ -1,10 +1,15 @@
 const DOCS_BASE = "https://sing-box.sagernet.org/configuration"
+// The Sudoku protocol is not part of upstream sing-box; its docs live in the
+// sudoku-sing-box fork.
+const SUDOKU_DOC = "https://github.com/SUDOKU-ASCII/sudoku-sing-box"
 
 export function inboundDoc(type: string): string {
+  if (type === "sudoku") return SUDOKU_DOC
   return `${DOCS_BASE}/inbound/${type}/`
 }
 
 export function outboundDoc(type: string): string {
+  if (type === "sudoku") return SUDOKU_DOC
   return `${DOCS_BASE}/outbound/${type}/`
 }
 

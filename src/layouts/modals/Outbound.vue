@@ -144,6 +144,11 @@
                 :data="outbound"
                 direction="out"
               />
+              <Sudoku
+                v-if="outbound.type == outTypes.Sudoku"
+                :data="outbound"
+                direction="out"
+              />
               <Tor
                 v-if="outbound.type == outTypes.Tor"
                 :data="outbound"
@@ -172,7 +177,7 @@
                 :outbound="outbound"
               />
               <Multiplex
-                v-if="Object.hasOwn(outbound,'multiplex')"
+                v-if="Object.hasOwn(outbound,'multiplex') && outbound.type != outTypes.Sudoku"
                 direction="out"
                 :data="outbound"
               />
@@ -258,12 +263,13 @@ import Selector from '@/components/protocols/Selector.vue'
 import UrlTest from '@/components/protocols/UrlTest.vue'
 import HttpUtils from '@/plugins/httputil'
 import AnyTls from '@/components/protocols/AnyTls.vue'
+import Sudoku from '@/components/protocols/Sudoku.vue'
 import Data from '@/store/modules/data'
 export default {
   components: { DocLink, Dial, Multiplex, Transport, OutTLS,
     Socks, Http, Shadowsocks, Vmess, Trojan,
     Hysteria, Naive, ShadowTls, Vless, Tuic,
-    Hysteria2, AnyTls, Tor, Ssh, Selector, UrlTest, Snell, Bridge },
+    Hysteria2, AnyTls, Tor, Ssh, Selector, UrlTest, Snell, Bridge, Sudoku },
   props: {
     visible: { type: Boolean, required: true },
     // A JSON string of the outbound being edited, empty when adding a new one.

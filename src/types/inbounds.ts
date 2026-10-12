@@ -21,6 +21,7 @@ export const InTypes = {
   Hysteria2: 'hysteria2',
   VLESS: 'vless',
   AnyTls: 'anytls',
+  Sudoku: 'sudoku',
   Tun: 'tun',
   Redirect: 'redirect',
   TProxy: 'tproxy',
@@ -204,6 +205,37 @@ export interface TProxy extends InboundBasics {
   network?: "udp" | "tcp"
 }
 
+// Sudoku (the sudoku-sing-box core protocol). Single-key, not per-user, so it
+// carries its own key rather than a user list. The httpmask and reverse blocks
+// mirror the fork's SudokuHTTPMaskOptions / SudokuReverseOptions.
+export interface Sudoku extends InboundBasics {
+  key: string
+  aead?: 'chacha20-poly1305' | 'aes-128-gcm' | 'none'
+  ascii?: 'prefer_ascii' | 'prefer_entropy'
+  custom_table?: string
+  custom_tables?: string[]
+  padding_min?: number
+  padding_max?: number
+  enable_pure_downlink?: boolean
+  multiplex?: 'off' | 'auto'
+  handshake_timeout?: number
+  suspicious_action?: 'fallback' | 'silent'
+  fallback_address?: string
+  httpmask?: {
+    disable?: boolean
+    mode?: string
+    tls?: boolean
+    host?: string
+    path_root?: string
+    multiplex?: string
+  }
+  reverse?: {
+    listen?: string
+    client_id?: string
+    routes?: { path: string, target: string, strip_prefix?: boolean, host_header?: string }[]
+  }
+}
+
 // Create interfaces dynamically based on InTypes keys
 type InterfaceMap = {
   direct: Direct
@@ -221,6 +253,7 @@ type InterfaceMap = {
   hysteria2: Hysteria2
   vless: VLESS
   anytls: AnyTls
+  sudoku: Sudoku
   tun: Tun
   redirect: Redirect
   tproxy: TProxy
@@ -257,6 +290,8 @@ const defaultValues: Record<InType, Inbound> = {
     "6=500-1000",
     "7=500-1000"
   ]},
+  sudoku: <Sudoku>{ type: InTypes.Sudoku, key: '', aead: 'chacha20-poly1305', ascii: 'prefer_entropy',
+    padding_min: 5, padding_max: 15, enable_pure_downlink: true, multiplex: 'auto', httpmask: {} },
   tun: <Tun>{ type: InTypes.Tun, mtu: 9000, stack: 'system', udp_timeout: '5m', auto_route: false },
   redirect: <Redirect>{ type: InTypes.Redirect },
   tproxy: <TProxy>{ type: InTypes.TProxy },

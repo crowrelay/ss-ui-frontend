@@ -130,6 +130,11 @@
                 :data="inbound"
                 direction="in"
               />
+              <Sudoku
+                v-if="inbound.type == inTypes.Sudoku"
+                direction="in"
+                :data="inbound"
+              />
               <TProxy
                 v-if="inbound.type == inTypes.TProxy"
                 :inbound="inbound"
@@ -164,7 +169,7 @@
                    edits the client block, which only exists once out_json is
                    initialised. -->
               <Multiplex
-                v-if="Object.hasOwn(inbound,'multiplex') && inbound.out_json"
+                v-if="Object.hasOwn(inbound,'multiplex') && inbound.out_json && inbound.type != inTypes.Sudoku"
                 direction="out"
                 :data="inbound.out_json"
               />
@@ -253,6 +258,7 @@ import ShadowTls from '@/components/protocols/ShadowTls.vue'
 import Tuic from '@/components/protocols/Tuic.vue'
 import Tun from '@/components/protocols/Tun.vue'
 import AnyTls from '@/components/protocols/AnyTls.vue'
+import Sudoku from '@/components/protocols/Sudoku.vue'
 import InTls from '@/components/tls/InTLS.vue'
 import TProxy from '@/components/protocols/TProxy.vue'
 import Multiplex from '@/components/Multiplex.vue'
@@ -265,7 +271,7 @@ export default {
     DocLink,
     Listen, InTls, Hysteria2, Naive, Direct, Shadowsocks,
     Users, Hysteria, ShadowTls, TProxy, Multiplex, Tuic, Tun,
-    AnyTls, Transport, AddrVue, OutJsonVue, Dial, Snell, Cloudflared
+    AnyTls, Transport, AddrVue, OutJsonVue, Dial, Snell, Cloudflared, Sudoku
   },
   props: {
     visible: { type: Boolean, required: true },
@@ -300,6 +306,7 @@ export default {
         InTypes.TUIC,
         InTypes.Hysteria2,
         InTypes.Naive,
+        InTypes.Sudoku,
       ],
       HasTls: [
         InTypes.HTTP,

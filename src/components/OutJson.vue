@@ -175,6 +175,11 @@
       :data="outJson"
       direction="out_json"
     />
+    <Sudoku
+      v-if="type == inTypes.Sudoku"
+      :data="outJson"
+      direction="out_json"
+    />
   </v-card>
 </template>
 
@@ -187,6 +192,7 @@ import UoT from './UoT.vue'
 import Headers from './Headers.vue'
 import AnyTls from './protocols/AnyTls.vue'
 import Naive from './protocols/Naive.vue'
+import Sudoku from './protocols/Sudoku.vue'
 
 // The outbound sing-box config this inbound hands to its clients: only the
 // fields the panel lets the operator override are listed here.
