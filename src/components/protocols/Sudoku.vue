@@ -281,13 +281,18 @@ const suspiciousActions = [
   { title: 'Silent', value: 'silent' },
 ]
 
-// The core's own generator, so the key format always matches. In shared-key
-// mode the same string is used on both sides; for split-key mode use the
-// public key on the inbound and the private key on the client.
+// The core's own generator, so the key format always matches. The pair is
+// asymmetric: the server (this inbound) keeps the public key and the client
+// gets the private key, which is the half the sudoku handshake expects. Putting
+// the private key on the inbound made the two sides derive different tables and
+// every connection died with EOF.
 async function generateKey() {
   const msg = await HttpUtils.get<string[]>('api/keypairs', { k: 'sudoku' })
   if (msg.success && Array.isArray(msg.obj) && msg.obj.length >= 2 && props.direction == 'in') {
-    data.value.key = msg.obj[0]
+    const [privateKey, publicKey] = msg.obj
+    data.value.key = publicKey
+    const out = (data.value as { out_json?: { key?: string } }).out_json
+    if (out) out.key = privateKey
   }
 }
 </script>
