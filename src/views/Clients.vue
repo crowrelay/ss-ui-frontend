@@ -452,11 +452,16 @@ const inbounds = computed((): Inbound[] => {
   return Data().inbounds?? []
 })
 
-// Only the inbound types that declare users are in the union, but any inbound
-// can carry one, so the field is read through a shape that only says that.
+// Inbounds a client can be attached to: those that declare users, plus
+// single-key protocols that hand every client the same shared block. Sudoku
+// carries no users, but it still produces a client outbound, so leaving it out
+// here hid it from the client editor entirely.
+const sharedClientTypes = ['sudoku']
 const inboundTags = computed((): { title: string, value: number }[] => {
   if (!inbounds.value) return []
-  return inbounds.value?.filter(i => i.tag != "" && (i as { users?: unknown }).users).map(i => { return { title: i.tag, value: i.id } })
+  return inbounds.value
+    ?.filter(i => i.tag != "" && ((i as { users?: unknown }).users || sharedClientTypes.includes(i.type)))
+    .map(i => { return { title: i.tag, value: i.id } })
 })
 
 const groups = computed((): string[] => {
